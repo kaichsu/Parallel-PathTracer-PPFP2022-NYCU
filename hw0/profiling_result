@@ -1,0 +1,33 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+101.20      0.12     0.12        1   121.45   121.45  Monto_Carlo_Pi()
+  0.00      0.12     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z14Monto_Carlo_Piv
+  0.00      0.12     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+
+			Call graph
+
+
+granularity: each sample hit covers 2 byte(s) for 8.23% of 0.12 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]    100.0    0.00    0.12                 main [1]
+                0.12    0.00       1/1           Monto_Carlo_Pi() [2]
+-----------------------------------------------
+                0.12    0.00       1/1           main [1]
+[2]    100.0    0.12    0.00       1         Monto_Carlo_Pi() [2]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [14]
+[9]      0.0    0.00    0.00       1         _GLOBAL__sub_I__Z14Monto_Carlo_Piv [9]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [10]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I__Z14Monto_Carlo_Piv [9]
+[10]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [10]
+-----------------------------------------------
+
+Index by function name
+
+   [9] _GLOBAL__sub_I__Z14Monto_Carlo_Piv [2] Monto_Carlo_Pi() [10] __static_initialization_and_destruction_0(int, int)
