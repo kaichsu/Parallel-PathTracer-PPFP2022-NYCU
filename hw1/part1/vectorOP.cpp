@@ -1,5 +1,4 @@
 #include "PPintrin.h"
-
 // implementation of absSerial(), but it is vectorized using PP intrinsics
 void absVector(float *values, float *output, int N)
 {
@@ -114,10 +113,23 @@ float arraySumVector(float *values, int N)
   //
   // PP STUDENTS TODO: Implement your vectorized version of arraySumSerial here
   //
-
+  __pp_vec_float result = _pp_vset_float(0);
+  __pp_mask allpass = _pp_init_ones();
   for (int i = 0; i < N; i += VECTOR_WIDTH)
   {
+    __pp_mask valid_pass = (i+VECTOR_WIDTH > N)? _pp_init_ones(N-i): _pp_init_ones();
+    __pp_vec_float vec_value = _pp_vset_float(0);
+    _pp_vload_float(vec_value, &values[i], valid_pass);
+    int cnt = VECTOR_WIDTH;
+    while(cnt / 2 > 0){
+      cnt /= 2;
+      __pp_vec_float tmp;
+      _pp_hadd_float(tmp, vec_value);
+      _pp_interleave_float(vec_value, tmp);
+    }
+    _pp_vadd_float(result, result, vec_value, valid_pass);
   }
-
-  return 0.0;
+  float ret[VECTOR_WIDTH];
+  _pp_vstore_float(ret, result, allpass);
+  return ret[0];
 }
