@@ -83,6 +83,7 @@ void mandelbrotSerial(
   {
     for (int i = 0; i < width; ++i)
     {
+      
       float x = x0 + i * dx;
       float y = y0 + j * dy;
 
