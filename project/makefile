@@ -1,5 +1,5 @@
 CXX = g++
-
+CXXFLAGS = -std=c++17 
 TARGET = a.out
 
 
@@ -25,7 +25,7 @@ run: $(TARGET)
 	tiv $(IMG)
 
 %.o: %.cpp $(INCS)
-	$(CXX) -c $< -o $(OBJ_DIR)/$@ 
+	$(CXX) -c $(CXXFLAGS) $< -o $(OBJ_DIR)/$@ 
 
 
 .PHONY: clean c objs srcs
