@@ -80,19 +80,16 @@ int main()
 {
 
       // Image
-
     const auto aspect_ratio = 3.0 / 2.0;
-    const int image_width = 1200;
+    const int image_width = 200;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 500;
+    const int samples_per_pixel = 100;
     const int max_depth = 50;
 
     // World
-
     auto world = random_scene();
 
     // Camera
-
     point3 lookfrom(13,2,3);
     point3 lookat(0,0,0);
     vec3 vup(0,1,0);
