@@ -1,10 +1,10 @@
 #include "page_rank.h"
-
+#include <vector>
+#include <omp.h>
+#include <iostream>
 #include <stdlib.h>
 #include <cmath>
-#include <omp.h>
 #include <utility>
-
 #include "../common/CycleTimer.h"
 #include "../common/graph.h"
 
@@ -23,11 +23,44 @@ void pageRank(Graph g, double *solution, double damping, double convergence)
 
   int numNodes = num_nodes(g);
   double equal_prob = 1.0 / numNodes;
-  for (int i = 0; i < numNodes; ++i)
-  {
+  double* old_sol = (double *)malloc(numNodes*sizeof(double));
+  bool converged = false;
+  double sink = 0;
+  double diff = 0;
+  for (int i = 0; i < numNodes; ++i) {
     solution[i] = equal_prob;
   }
 
+  while(!converged){
+    sink = 0;
+    diff = 0;
+    #pragma omp parallel for reduction(+:sink)
+    for(int i=0; i<numNodes; ++i){
+      old_sol[i] = solution[i];
+      if(outgoing_size(g,i) == 0){
+        sink += old_sol[i];
+      }
+    }
+    sink *= damping / numNodes;
+    
+    #pragma omp parallel for reduction(+:diff)
+    for(int i=0; i<numNodes; ++i){
+      solution[i] = 0;
+      const Vertex* start = incoming_begin(g, i);
+      const Vertex* end = incoming_end(g, i);
+      for(const Vertex* v=start; v!= end; ++v){
+        solution[i] += old_sol[*v]/outgoing_size(g, *v);
+      }
+      solution[i] = damping * solution[i] + (1.0-damping) / numNodes;
+      solution[i] += sink;
+      diff += fabs(solution[i] - old_sol[i]);
+    }
+    if(diff <= convergence){
+      converged = true;
+      break;
+    }
+  }
+  free(old_sol);
   /*
      For PP students: Implement the page rank algorithm here.  You
      are expected to parallelize the algorithm using openMP.  Your
@@ -54,6 +87,6 @@ void pageRank(Graph g, double *solution, double damping, double convergence)
        global_diff = sum over all nodes vi { abs(score_new[vi] - score_old[vi]) };
        converged = (global_diff < convergence)
      }
-
    */
+    
 }

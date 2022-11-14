@@ -13,7 +13,7 @@
 #include <cmath>
 
 #include <omp.h>
-
+#include <iomanip>
 #include "graph.h"
 #include "graph_internal.h"
 #include "contracts.h"
@@ -74,8 +74,8 @@ bool compareApprox(Graph graph, T* ref, T* stu)
 {
   for (int i = 0; i < graph->num_nodes; i++) {
     if (fabs(ref[i] - stu[i]) > EPSILON) {
-      std::cerr << "*** Results disagree at " << i << " expected " 
-        << ref[i] << " found " << stu[i] << std::endl;
+      std::cerr << "*** Results disagree at " << std::setprecision(10) << i << " expected " 
+        << ref[i] << " found " << stu[i] << " diff " << fabs(ref[i] - stu[i]) << std::endl;
       return false;
     }
   }
