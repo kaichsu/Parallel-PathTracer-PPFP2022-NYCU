@@ -1,10 +1,9 @@
 CXX = g++
-CXXFLAGS = -std=c++17 
+CXXFLAGS = -std=c++17 -O3
 TARGET = a.out
 
 
 TARGET = ./raytrace
-IMG = image.ppm
 INC_DIR = ./includes
 SRC_DIR = ./src
 OBJ_DIR = ./obj
@@ -21,8 +20,7 @@ $(TARGET): $(OBJS)
 	$(CXX) -o $@ $(addprefix $(OBJ_DIR)/,  $(OBJS))
 
 run: $(TARGET)
-	$(TARGET) > $(IMG)
-	tiv $(IMG)
+	$(TARGET)
 
 %.o: %.cpp $(INCS)
 	$(CXX) -c $(CXXFLAGS) $< -o $(OBJ_DIR)/$@ 
