@@ -10,6 +10,7 @@
 #include "../includes/camera.hpp"
 #include "../includes/material.hpp"
 #include "../includes/scene.hpp"
+#include "../includes/parseArg.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../includes/stb_image_write.h"
@@ -33,18 +34,21 @@ color ray_color(const ray &r, const hittable &world, int depth)
     return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
 
-int main()
+int main(int argc, char **argv)
 {
 
-      // Image
-    const auto aspect_ratio = 3.0 / 2.0;
-    const int image_width = 200;
-    const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int image_channels = 3;
-    const int samples_per_pixel = 50;
-    const int max_depth = 50;
+    // Image
+    int image_width = 200;
+    int image_height = 133;;
+    int image_channels = 3;
+    int samples_per_pixel = 50;
+    int max_depth = 50;
+    const char *image_path = "./image.png";
+
+    if(parse_arg(argc, argv, image_height, image_width, samples_per_pixel, max_depth, &image_path) != 0) return -1;
+
+    const double aspect_ratio = static_cast<double>(image_width / image_height);
     unsigned char *image_data = new unsigned char[image_height * image_width * image_channels];
-    const std::string image_path = "./image.png";
     // World
     auto world = random_scene();
 
@@ -71,7 +75,7 @@ int main()
             write_color(image_height, image_width, image_channels, x, image_height - 1 - y, image_data, pixel_color, samples_per_pixel);
         }
     }
-    stbi_write_png(image_path.c_str(), image_width, image_height, image_channels, image_data, 0);
+    stbi_write_png(image_path, image_width, image_height, image_channels, image_data, 0);
     // std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
     // for(int y = 0; y < image_height; ++y){
     //     for(int x = 0; x<image_width; ++x){
