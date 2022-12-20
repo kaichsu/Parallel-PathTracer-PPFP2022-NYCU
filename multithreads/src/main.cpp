@@ -67,21 +67,20 @@ int main(int argc, char** argv)
     std::cerr << "max_thread: " << max_thread << "\n";
 
     // split frame
-    #pragma omp parallel for 
-    for(int y = 0; y < image_height; ++y){
-        // std::cerr << "\rScanlines remaining: " << y << '/' <<  image_height << std::flush;
-        for(int x = 0; x < image_width; ++x){
-            color pixel_color(0,0,0);
-            // split ray
-            // #pragma omp parallel for
-            for(int s = 0; s < samples_per_pixel; ++s){
-                auto u = (x + random_double()) / (image_width - 1);
-                auto v = (y + random_double()) / (image_height - 1);
-                ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world, max_depth);
-            }
-            write_color(image_height, image_width, image_channels, x, image_height - 1 - y, image_data, pixel_color, samples_per_pixel);
+    #pragma omp parallel for
+    for (int i = 0; i < image_height*image_width; i++) {
+        int x = i % image_width;
+        int y = i / image_width;
+        color pixel_color(0,0,0);
+        // split ray
+        // #pragma omp parallel for
+        for(int s = 0; s < samples_per_pixel; ++s){
+            auto u = (x + random_double()) / (image_width - 1);
+            auto v = (y + random_double()) / (image_height - 1);
+            ray r = cam.get_ray(u, v);
+            pixel_color += ray_color(r, world, max_depth);
         }
+        write_color(image_height, image_width, image_channels, x, image_height - 1 - y, image_data, pixel_color, samples_per_pixel);
     }
     stbi_write_png(image_path, image_width, image_height, image_channels, image_data, 0);
     // std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
