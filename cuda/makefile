@@ -16,7 +16,7 @@ vpath %.o $(OBJ_DIR)
 
 
 $(TARGET): $(SRC_DIR)/main.cu
-	nvcc -I. -rdc=true -use_fast_math -gencode arch=compute_75,code=sm_75 -O3 $(SRC_DIR)/main.cu -o $(TARGET)
+	nvcc -I. -rdc=true -use_fast_math -O3 $(SRC_DIR)/main.cu -o $(TARGET)
 
 run: $(TARGET)
 	$(TARGET)
