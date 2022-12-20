@@ -27,7 +27,7 @@ __device__ color ray_color(const ray& r, curandState* rand_state, hittable_list 
     hit_record rec;
     const float inf = infinity;
     for(int i=0; i < max_depth; ++i){
-        if ((*world)->hit(cur_ray, 0.001f, inf, rec)) {
+        if ((*world)->hit(cur_ray, 0.001, inf, rec)) {
             if(rec.mat_ptr->scatter(cur_ray, rec, next_attuenuation, scattered, rand_state)){
                 cur_ray = scattered;
                 attenuation = attenuation * next_attuenuation;
