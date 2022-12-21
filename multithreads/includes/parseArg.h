@@ -11,12 +11,13 @@ void usage(const char *progname)
     printf("  -w  --width <INT>     image width\n");
     printf("  -s  --samples <INT>   samples per pixel\n");
     printf("  -d  --maxDepth <INT>  the maximun times of a ray could bounce\n");
+    printf("  -d  --threads <INT>   the amount of active threads\n");
     printf("  -o  --output <STRING> image output path, default: ./image.png\n");
     printf("  -?  --help            This message\n");
     return;
 }
 
-int parse_arg(int argc, char **argv, int &height, int &width, int &samples, int &maxDepth, const char **path)
+int parse_arg(int argc, char **argv, int &height, int &width, int &samples, int &maxDepth, int &max_thread, const char **path)
 {
     int opt;
     static struct option long_options[] = {
@@ -24,11 +25,12 @@ int parse_arg(int argc, char **argv, int &height, int &width, int &samples, int 
         {"width", 1, 0, 'w'},
         {"samples", 1, 0, 's'},
         {"depth", 1, 0, 'd'},
+        {"threads", 1, 0, 't'},
         {"output", 1, 0, 'o'},
         {"help", 0, 0, '?'},
         {0, 0, 0, 0}};
 
-    while ((opt = getopt_long(argc, argv, "h:w:s:b:d:o:?", long_options, NULL)) != EOF)
+    while ((opt = getopt_long(argc, argv, "h:w:s:b:d:t:o:?", long_options, NULL)) != EOF)
     {
         switch (opt)
         {
@@ -64,6 +66,15 @@ int parse_arg(int argc, char **argv, int &height, int &width, int &samples, int 
             maxDepth = atoi(optarg);
             if (maxDepth <= 0){
                 fprintf(stderr, "maxDepth should > 0\n");
+                return 1;
+            }
+            break;
+        }
+        case 't':
+        {
+            max_thread = atoi(optarg);
+            if (max_thread <= 0){
+                fprintf(stderr, "max_thread should > 0\n");
                 return 1;
             }
             break;
