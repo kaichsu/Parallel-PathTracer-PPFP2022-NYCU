@@ -46,8 +46,11 @@ int main(int argc, char** argv)
     int samples_per_pixel = 50;
     int max_depth = 50;
     const char *image_path = "./image.png";
+    int max_thread = 8;
 
-    if(parse_arg(argc, argv, image_height, image_width, samples_per_pixel, max_depth, &image_path) != 0) return -1;
+    if(parse_arg(argc, argv, image_height, image_width, samples_per_pixel, max_depth, max_thread, &image_path) != 0) return -1;
+
+    omp_set_num_threads(max_thread);
 
     const double aspect_ratio = static_cast<double>(image_width) / image_height;
     unsigned char *image_data = new unsigned char[image_height * image_width * image_channels];
@@ -63,8 +66,7 @@ int main(int argc, char** argv)
 
     camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
     
-    int max_thread = omp_get_max_threads();
-    std::cerr << "max_thread: " << max_thread << "\n";
+    std::cerr << "max_thread: " << omp_get_max_threads() << "\n";
 
     // split frame
     #pragma omp parallel for
