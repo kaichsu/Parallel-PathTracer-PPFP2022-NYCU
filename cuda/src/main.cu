@@ -189,8 +189,17 @@ int main(int argc, char **argv) {
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
+    float time;
+    cudaEvent_t start, stop;
+    checkCudaErrors(cudaEventCreate(&start));
+    checkCudaErrors(cudaEventCreate(&stop));
+    checkCudaErrors(cudaEventRecord(start, 0));
     render<<<blocks, threads>>>(d_image, height, width, samples, max_depth, origin, lower_left_corner, horizontal, vertical, d_rand_state, d_camera, d_world);
     checkCudaErrors(cudaGetLastError());
+    checkCudaErrors(cudaEventRecord(stop, 0));
+    checkCudaErrors(cudaEventSynchronize(stop));
+    checkCudaErrors( cudaEventElapsedTime(&time, start, stop) );
+    fprintf(stderr, "Work took %f seconds\n", time/1e3);
     checkCudaErrors(cudaMemcpy(h_image, d_image, height * width * 3 * sizeof(unsigned char), cudaMemcpyDeviceToHost));
     checkCudaErrors(cudaDeviceSynchronize());
 

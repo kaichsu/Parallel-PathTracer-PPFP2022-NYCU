@@ -65,7 +65,10 @@ int main(int argc, char** argv)
     
     int max_thread = omp_get_max_threads();
     std::cerr << "max_thread: " << max_thread << "\n";
+    double start;
+    double end;
 
+    start = omp_get_wtime();
     // split frame
     #pragma omp parallel for
     for (int i = 0; i < image_height*image_width; i++) {
@@ -82,6 +85,8 @@ int main(int argc, char** argv)
         }
         write_color(image_height, image_width, image_channels, x, image_height - 1 - y, image_data, pixel_color, samples_per_pixel);
     }
+    end = omp_get_wtime();
+    fprintf(stderr, "Work took %f seconds\n", end-start);
     stbi_write_png(image_path, image_width, image_height, image_channels, image_data, 0);
     // std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
     // for(int y = 0; y < image_height; ++y){
