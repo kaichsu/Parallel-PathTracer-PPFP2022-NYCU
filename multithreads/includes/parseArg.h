@@ -12,12 +12,13 @@ void usage(const char *progname)
     printf("  -s  --samples <INT>   samples per pixel\n");
     printf("  -d  --maxDepth <INT>  the maximun times of a ray could bounce\n");
     printf("  -d  --threads <INT>   the amount of active threads\n");
+    printf("  -v  --view 1/2        the view of the scene\n");
     printf("  -o  --output <STRING> image output path, default: ./image.png\n");
     printf("  -?  --help            This message\n");
     return;
 }
 
-int parse_arg(int argc, char **argv, int &height, int &width, int &samples, int &maxDepth, int &max_thread, const char **path)
+int parse_arg(int argc, char **argv, int &height, int &width, int &samples, int &maxDepth, int &max_thread, int &view, const char **path)
 {
     int opt;
     static struct option long_options[] = {
@@ -26,11 +27,12 @@ int parse_arg(int argc, char **argv, int &height, int &width, int &samples, int 
         {"samples", 1, 0, 's'},
         {"depth", 1, 0, 'd'},
         {"threads", 1, 0, 't'},
+        {"view", 1, 0, 'v'},
         {"output", 1, 0, 'o'},
         {"help", 0, 0, '?'},
         {0, 0, 0, 0}};
 
-    while ((opt = getopt_long(argc, argv, "h:w:s:b:d:t:o:?", long_options, NULL)) != EOF)
+    while ((opt = getopt_long(argc, argv, "h:w:s:b:d:t:v:o:?", long_options, NULL)) != EOF)
     {
         switch (opt)
         {
@@ -84,6 +86,15 @@ int parse_arg(int argc, char **argv, int &height, int &width, int &samples, int 
             *path = optarg;
             if (strlen(*path) <= 0){
                 fprintf(stderr, "output path shouldn't be empty\n");
+                return 1;
+            }
+            break;
+        }
+        case 'v':
+        {
+            view = atoi(optarg);
+            if (!(view == 1 || view == 2)){
+                fprintf(stderr, "view must 1 or 2\n");
                 return 1;
             }
             break;

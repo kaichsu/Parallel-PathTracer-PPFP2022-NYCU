@@ -547,7 +547,6 @@ hittable_list fixed_random_scene() {
 
     auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
-
     return world;
 }
 

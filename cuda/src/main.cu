@@ -87,7 +87,9 @@ int main(int argc, char **argv) {
     int max_depth = 50;
     float aspect_ratio = static_cast<float>(width) / height;
     const char *path = "./image.png";
-    if(parse_arg(argc, argv, height, width, samples, max_depth, &path) != 0)
+    int view = 1;
+    int uselessthread = 1;
+    if(parse_arg(argc, argv, height, width, samples, max_depth, uselessthread, view, &path) != 0)
         return;
 
     // Camera
@@ -103,7 +105,12 @@ int main(int argc, char **argv) {
     hittable **d_list;
     checkCudaErrors(cudaMalloc((void**)&d_list, 1 * sizeof(hittable *)));
     checkCudaErrors(cudaMalloc((void**)&d_world, sizeof(hittable_list *)));
-    create_fixed_world<<<1, 1>>>(d_world);
+    if(view == 1){
+        create_fixed_world<<<1, 1>>>(d_world);
+    }
+    else if(view == 2){
+        create_ground_metal_world<<<1, 1>>>(d_world);
+    }
     checkCudaErrors(cudaGetLastError());
 
 

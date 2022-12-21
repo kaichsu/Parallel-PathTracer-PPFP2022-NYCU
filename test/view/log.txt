@@ -1,0 +1,22 @@
+./multithreads/raytrace -w 600 -h 400 -s 50 -d 50 -t 1 -v 1 -o ./test/view/1/serial.png
+max_thread: 1
+Work took 79.801593 seconds
+
+./multithreads/raytrace -w 600 -h 400 -s 50 -d 50 -t 8 -v 1 -o ./test/view/1/multithreads.png
+max_thread: 8
+Work took 26.632792 seconds
+
+./cuda/raytrace -w 600 -h 400 -s 50 -d 50 -v 1 -o ./test/view/1/cuda.png
+Work took 4.852929 seconds
+
+./multithreads/raytrace -w 600 -h 400 -s 50 -d 50 -t 1 -v 2 -o ./test/view/2/serial.png
+max_thread: 1
+Work took 71.507063 seconds
+
+./multithreads/raytrace -w 600 -h 400 -s 50 -d 50 -t 8 -v 2 -o ./test/view/2/multithreads.png
+max_thread: 8
+Work took 21.770476 seconds
+
+./cuda/raytrace -w 600 -h 400 -s 50 -d 50 -v 2 -o ./test/view/2/cuda.png
+Work took 3.938858 seconds
+

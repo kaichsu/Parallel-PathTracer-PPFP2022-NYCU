@@ -36,6 +36,8 @@ color ray_color(const ray &r, const hittable &world, int depth)
     return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
 
+#pragma omp declare reduction(ColorPlus: color: omp_out += omp_in)
+
 int main(int argc, char** argv)
 {
 
@@ -45,19 +47,25 @@ int main(int argc, char** argv)
     int image_channels = 3;
     int samples_per_pixel = 50;
     int max_depth = 50;
+    int view = 1;
     const char *image_path = "./image.png";
     int max_thread = 8;
 
-    if(parse_arg(argc, argv, image_height, image_width, samples_per_pixel, max_depth, max_thread, &image_path) != 0) return -1;
+    if(parse_arg(argc, argv, image_height, image_width, samples_per_pixel, max_depth, max_thread, view, &image_path) != 0) return -1;
 
     omp_set_num_threads(max_thread);
 
     const double aspect_ratio = static_cast<double>(image_width) / image_height;
     unsigned char *image_data = new unsigned char[image_height * image_width * image_channels];
+    
     // World
-    // auto world = random_scene();
-    auto world = fixed_random_scene();
-
+    hittable_list world;
+    if(view == 1){
+        world = fixed_random_scene();
+    }
+    else if(view == 2){
+        world = ground_metal_scene();
+    }
     // Camera
     point3 lookfrom(13,2,3);
     point3 lookat(0,0,0);
