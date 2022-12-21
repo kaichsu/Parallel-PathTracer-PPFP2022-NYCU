@@ -1,33 +1,33 @@
 ./multithreads/raytrace -w 300 -h 200 -s 50 -d 50 -t 1 -o ./test/size/300x200/serial.png
 max_thread: 1
-Work took 18.096767 seconds
+Work took 17.701249 seconds
 
 ./multithreads/raytrace -w 300 -h 200 -s 50 -d 50 -t 8 -o ./test/size/300x200/multithreads.png
 max_thread: 8
-Work took 6.022995 seconds
+Work took 6.501180 seconds
 
 ./cuda/raytrace -w 300 -h 200 -s 50 -d 50 -o ./test/size/300x200/cuda.png
-Work took 1.438460 seconds
+Work took 1.475389 seconds
 
 ./multithreads/raytrace -w 600 -h 400 -s 50 -d 50 -t 1 -o ./test/size/600x400/serial.png
 max_thread: 1
-Work took 71.059956 seconds
+Work took 70.422102 seconds
 
 ./multithreads/raytrace -w 600 -h 400 -s 50 -d 50 -t 8 -o ./test/size/600x400/multithreads.png
 max_thread: 8
-Work took 21.896800 seconds
+Work took 21.773384 seconds
 
 ./cuda/raytrace -w 600 -h 400 -s 50 -d 50 -o ./test/size/600x400/cuda.png
-Work took 4.819628 seconds
+Work took 4.830547 seconds
 
 ./multithreads/raytrace -w 1200 -h 800 -s 50 -d 50 -t 1 -o ./test/size/1200x800/serial.png
 max_thread: 1
-Work took 289.253736 seconds
+Work took 285.280591 seconds
 
 ./multithreads/raytrace -w 1200 -h 800 -s 50 -d 50 -t 8 -o ./test/size/1200x800/multithreads.png
 max_thread: 8
-Work took 90.916700 seconds
+Work took 90.095978 seconds
 
 ./cuda/raytrace -w 1200 -h 800 -s 50 -d 50 -o ./test/size/1200x800/cuda.png
-Work took 18.429967 seconds
+Work took 18.333852 seconds
 
