@@ -14,6 +14,7 @@
 #include "../includes/utils.cu"
 #include "../includes/parseArg.h" 
 #include "../includes/camera.cu"
+#include "../includes/scene.cu"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../includes/stb_image_write.h"
 
@@ -78,59 +79,6 @@ __global__ void render(
     write_color(pixel_color, image_index, samples, image);
 }
 
-__global__ void create_world(hittable_list **d_world){
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-
-    if(x != 0 || y != 0)
-        return ;
-    
-    curandState *rand_state = new curandState();
-    curand_init(1234, 0, 0, rand_state);
-    
-    (*d_world) = new hittable_list();
-
-    material* ground_material = new lambertian(color(0.5, 0.5, 0.5));
-    (*d_world)->add(new sphere(point3(0,-1000,0), 1000, ground_material));
-
-        for (int a = -11; a < 11; a++) {
-        for (int b = -11; b < 11; b++) {
-            auto choose_mat = random_float(rand_state);
-            point3 center(a + 0.9*random_float(rand_state), 0.2, b + 0.9*random_float(rand_state));
-
-            if ((center - point3(4, 0.2, 0)).length() > 0.9) {
-                material *sphere_material;
-
-                if (choose_mat < 0.8) {
-                    // diffuse
-                    auto albedo = color::random(rand_state) * color::random(rand_state);
-                    sphere_material = new lambertian(albedo);
-                    (*d_world)->add(new sphere(center, 0.2, sphere_material));
-                } else if (choose_mat < 0.95) {
-                    // metal
-                    auto albedo = color::random(0.5, 1, rand_state);
-                    auto fuzz = random_float(0, 0.5, rand_state);
-                    sphere_material = new metal(albedo, fuzz);
-                    (*d_world)->add(new sphere(center, 0.2, sphere_material));
-                } else {
-                    // glass
-                    sphere_material = new dielectric(1.5);
-                    (*d_world)->add(new sphere(center, 0.2, sphere_material));
-                }
-            }
-        }
-    }
-
-    auto material1 = new dielectric(1.5);
-    (*d_world)->add(new sphere(point3(0, 1, 0), 1.0, material1));
-
-    auto material2 = new lambertian(color(0.4, 0.2, 0.1));
-    (*d_world)->add(new sphere(point3(-4, 1, 0), 1.0, material2));
-
-    auto material3 = new metal(color(0.7, 0.6, 0.5), 0.0);
-    (*d_world)->add(new sphere(point3(4, 1, 0), 1.0, material3));
-}
-
 int main(int argc, char **argv) {
     // Image
     int width = 200;
@@ -155,7 +103,7 @@ int main(int argc, char **argv) {
     hittable **d_list;
     checkCudaErrors(cudaMalloc((void**)&d_list, 1 * sizeof(hittable *)));
     checkCudaErrors(cudaMalloc((void**)&d_world, sizeof(hittable_list *)));
-    create_world<<<1, 1>>>(d_world);
+    create_fixed_world<<<1, 1>>>(d_world);
     checkCudaErrors(cudaGetLastError());
 
 

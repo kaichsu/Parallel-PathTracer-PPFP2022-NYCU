@@ -55,7 +55,8 @@ int main(int argc, char** argv)
     const double aspect_ratio = static_cast<double>(image_width) / image_height;
     unsigned char *image_data = new unsigned char[image_height * image_width * image_channels];
     // World
-    auto world = random_scene();
+    // auto world = random_scene();
+    auto world = fixed_random_scene();
 
     // Camera
     point3 lookfrom(13,2,3);
